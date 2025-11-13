@@ -73,7 +73,7 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
               Icon(Icons.article_rounded, color: Colors.redAccent, size: 36),
               SizedBox(width: 8),
               Text(
-                "दैनिक समाचार",
+                "समाचार",
                 style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
