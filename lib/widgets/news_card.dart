@@ -14,39 +14,45 @@ class NewsCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => NewsDetailPage(article: article)),
+          MaterialPageRoute(
+            builder: (_) => NewsDetailPage(article: article),
+          ),
         );
       },
       child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
         elevation: 4,
+        margin: const EdgeInsets.only(bottom: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         clipBehavior: Clip.hardEdge,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🖼️ Image Section
+            // 🖼️ Image
             if (article.imageUrl != null)
               Image.network(
                 article.imageUrl!,
-                height: 200,
                 width: double.infinity,
+                height: 200,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) =>
-                    Container(height: 200, color: Colors.grey[300]),
+                errorBuilder: (context, error, stack) => Container(
+                  height: 200,
+                  color: Colors.grey.shade300,
+                  alignment: Alignment.center,
+                  child: const Icon(Icons.broken_image, color: Colors.grey),
+                ),
               ),
 
-            // 📄 Content Section
+            // 📄 Content
             Padding(
               padding: const EdgeInsets.all(14.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Category tag
+                  // Category chip
                   if (article.category != null)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
+                          horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(6),
@@ -54,9 +60,8 @@ class NewsCard extends StatelessWidget {
                       child: Text(
                         article.category!,
                         style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
                           fontSize: 12,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -71,7 +76,7 @@ class NewsCard extends StatelessWidget {
                       height: 1.3,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
 
                   // Subtitle
                   Text(
@@ -79,24 +84,23 @@ class NewsCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 14,
                       color: Colors.black54,
-                      height: 1.4,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
 
-                  // Footer Info
+                  // Footer
                   Row(
                     children: [
                       const Icon(Icons.location_on_outlined,
-                          size: 16, color: Colors.black54),
+                          size: 16, color: Colors.black45),
                       const SizedBox(width: 4),
                       Text(article.location ?? '',
                           style: const TextStyle(color: Colors.black54)),
                       const SizedBox(width: 16),
                       const Icon(Icons.calendar_today_outlined,
-                          size: 16, color: Colors.black54),
+                          size: 16, color: Colors.black45),
                       const SizedBox(width: 4),
                       Text(
                         DateFormat('dd MMM')
@@ -104,10 +108,10 @@ class NewsCard extends StatelessWidget {
                         style: const TextStyle(color: Colors.black54),
                       ),
                     ],
-                  ),
+                  )
                 ],
               ),
-            ),
+            )
           ],
         ),
       ),

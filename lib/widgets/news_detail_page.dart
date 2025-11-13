@@ -10,7 +10,6 @@ class NewsDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(article.category ?? "समाचार"),
         backgroundColor: Colors.redAccent,
@@ -20,26 +19,21 @@ class NewsDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🏷️ Title and Subtitle
+            // 🏷 Title
             Text(
-              article.title ?? '',
+              article.title ?? "",
               style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                height: 1.4,
-              ),
+                  fontSize: 22, fontWeight: FontWeight.bold, height: 1.4),
             ),
             const SizedBox(height: 8),
             Text(
-              article.subtitle ?? '',
+              article.subtitle ?? "",
               style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
-              ),
+                  fontSize: 16, color: Colors.black54, height: 1.3),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
 
-            // Author Info
+            // Meta Info
             Row(
               children: [
                 const Icon(Icons.person_outline, color: Colors.grey, size: 18),
@@ -60,7 +54,7 @@ class NewsDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // 🖼️ Image
+            // 🖼 Image
             if (article.imageUrl != null)
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
@@ -68,9 +62,9 @@ class NewsDetailPage extends StatelessWidget {
               ),
             const SizedBox(height: 20),
 
-            // 📰 Content
+            // 🗞 Content
             Text(
-              article.content ?? '',
+              article.content ?? "",
               style: const TextStyle(fontSize: 16, height: 1.6),
             ),
           ],

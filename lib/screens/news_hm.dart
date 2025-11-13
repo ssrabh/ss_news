@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:ss_news/provider/news_pvd.dart';
 import 'package:ss_news/provider/navbar_provider.dart';
 import 'package:ss_news/screens/news_navbar.dart';
+import 'package:ss_news/widgets/news_card.dart';
 
 class NewsHomePage extends StatefulWidget {
   const NewsHomePage({super.key});
@@ -15,9 +16,14 @@ class _NewsHomePageState extends State<NewsHomePage> {
   @override
   void initState() {
     super.initState();
-    // Trigger initial data load when provider is ready
+
+    // 📰 Load business/general news once at startup
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // context.read<NewsPvd>().fetchAllCategoryNews();
+      final newsPvd = Provider.of<NewsPvd>(context, listen: false);
+      newsPvd.fetchBusinessNews();
+      // newsPvd.fetchPoliticsNews();
+      newsPvd.fetchSportsNews();
+      // newsPvd.fetchGeneralNews();
     });
   }
 
@@ -28,9 +34,11 @@ class _NewsHomePageState extends State<NewsHomePage> {
         return Scaffold(
           backgroundColor: Colors.grey.shade100,
           appBar: const PreferredSize(
-            preferredSize: Size.fromHeight(130),
-            child: ResponsiveNavbar(), // renamed to match your file
+            preferredSize: Size.fromHeight(165), // match ResponsiveNavbar
+            child: ResponsiveNavbar(),
           ),
+
+          // 📱 Drawer for small screens
           endDrawer: Drawer(
             backgroundColor: Colors.white,
             child: ListView(
@@ -38,15 +46,14 @@ class _NewsHomePageState extends State<NewsHomePage> {
                 const DrawerHeader(
                   decoration: BoxDecoration(color: Colors.redAccent),
                   child: Text(
-                    "समाचार",
+                    "समाचार श्रेणियाँ",
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
-                ...newsPvd.categories.map((category) {
+                ...navPvd.categories.map((category) {
                   final isSelected = navPvd.selectedCategory == category;
                   return ListTile(
                     title: Text(
@@ -59,7 +66,7 @@ class _NewsHomePageState extends State<NewsHomePage> {
                     ),
                     selected: isSelected,
                     onTap: () {
-                      navPvd.setCategory(category);
+                      navPvd.selectCategory(category);
                       Navigator.pop(context);
                     },
                   );
@@ -67,6 +74,8 @@ class _NewsHomePageState extends State<NewsHomePage> {
               ],
             ),
           ),
+
+          // 📰 Main body area
           body: SafeArea(
             child: newsPvd.isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -84,6 +93,7 @@ class _NewsHomePageState extends State<NewsHomePage> {
     );
   }
 
+  // Builds the news feed list based on selected category
   Widget _buildCategoryContent(
       BuildContext context, NewsPvd newsPvd, NavbarProvider navPvd) {
     final category = navPvd.selectedCategory;
@@ -101,34 +111,8 @@ class _NewsHomePageState extends State<NewsHomePage> {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: articles.length,
-      itemBuilder: (context, index) {
-        final article = articles[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          elevation: 3,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          child: ListTile(
-            leading: article.imageUrl != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      article.imageUrl!,
-                      width: 70,
-                      height: 70,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                : const Icon(Icons.article, color: Colors.grey),
-            title: Text(article.title ?? ""),
-            subtitle: Text(article.subtitle ?? ""),
-            trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-            onTap: () {
-              // You can later navigate to detailed news page
-            },
-          ),
-        );
-      },
+      itemBuilder: (context, index) =>
+          NewsCard(article: articles[index]), // ✅ use NewsCard widget
     );
   }
 }

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ss_news/data/mock_data.dart';
 import 'package:ss_news/provider/navbar_provider.dart';
 
 class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
   const ResponsiveNavbar({super.key});
 
   @override
-  Size get preferredSize => const Size.fromHeight(130);
+  Size get preferredSize => const Size.fromHeight(165); // increased height
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +26,13 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
             _desktopCategoryBar(context, navbarProvider)
           else
             _mobileAppBar(context),
-          _breakingNewsBar(),
+          _breakingNewsBar(navbarProvider),
         ],
       ),
     );
   }
 
-  // 📅 Top Red Bar (Date, E-Paper, Contact)
+  // 📅 Top red bar
   Widget _topBar() {
     return Container(
       color: const Color(0xFFE53935),
@@ -52,37 +51,33 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ],
           ),
-          Row(
-            children: [
-              Text("ई-पेपर  •  संपर्क करें",
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w500)),
-            ],
+          Text(
+            "ई-पेपर  •  संपर्क करें",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
           ),
         ],
       ),
     );
   }
 
-  // 💻 Desktop Navbar (with categories)
+  // 💻 Desktop category navbar
   Widget _desktopCategoryBar(BuildContext context, NavbarProvider provider) {
     return Container(
       color: Colors.black,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
         children: [
-          // Logo & Brand
-          Row(
-            children: const [
+          // Logo
+          const Row(
+            children: [
               Icon(Icons.article_rounded, color: Colors.redAccent, size: 36),
               SizedBox(width: 8),
               Text(
                 "दैनिक समाचार",
                 style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                ),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22),
               ),
               SizedBox(width: 6),
               Text(
@@ -92,10 +87,35 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
             ],
           ),
           const Spacer(),
-          // Search
+
+          // 🧭 Categories
+          Row(
+            children: provider.categories
+                .map((cat) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: GestureDetector(
+                        onTap: () => provider.selectCategory(cat),
+                        child: Text(
+                          cat,
+                          style: TextStyle(
+                            color: provider.selectedCategory == cat
+                                ? Colors.redAccent
+                                : Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ))
+                .toList(),
+          ),
+
+          const Spacer(),
+
+          // 🔍 Search box
           SizedBox(
             width: 250,
             child: TextField(
+              onChanged: provider.updateSearch,
               decoration: InputDecoration(
                 hintText: 'समाचार खोजें...',
                 contentPadding:
@@ -110,13 +130,12 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
           ),
-          const SizedBox(width: 20),
         ],
       ),
     );
   }
 
-  // 📱 Mobile Navbar (with menu icon)
+  // 📱 Mobile Navbar
   Widget _mobileAppBar(BuildContext context) {
     return Container(
       color: Colors.black,
@@ -140,8 +159,8 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  // 📰 Breaking News Bar
-  Widget _breakingNewsBar() {
+  // 📰 Breaking News
+  Widget _breakingNewsBar(NavbarProvider provider) {
     return Container(
       color: Colors.redAccent,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -162,9 +181,10 @@ class ResponsiveNavbar extends StatelessWidget implements PreferredSizeWidget {
           const SizedBox(width: 12),
           Expanded(
             child: SingleChildScrollView(
+              controller: provider.breakingScrollController,
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: MockData.breakingNews
+                children: provider.breakingNews
                     .map((news) => Padding(
                           padding: const EdgeInsets.only(right: 24),
                           child: Text(
