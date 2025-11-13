@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ss_news/provider/navbar_provider.dart';
 import 'package:ss_news/provider/news_pvd.dart';
 import 'package:ss_news/screens/news_hm.dart';
 
 void main() {
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (context) => NewsPvd())],
+    providers: [
+      ChangeNotifierProvider(create: (context) => NewsPvd()),
+      ChangeNotifierProvider(create: (context) => NavbarProvider()),
+    ],
     child: const MyApp(),
   ));
 }
